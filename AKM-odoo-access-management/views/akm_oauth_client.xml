@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Odoo Version 18.0 -->
+<odoo>
+    <data>
+        <!-- List View Definition for AKM Auth Clients-->
+        <record id="akm_oauth_client_list" model="ir.ui.view">
+            <field name="name">akm.oauth.client.list</field>
+            <field name="model">akm.oauth.client</field>
+            <field name="arch" type="xml">
+                <list string="AKM Oauth Client">
+                    <field name="name"/>
+                    <field name="client_id" string="Client ID"/>
+                    <!-- client_secret intentionally not shown here -->
+                    <field name="redirect_uri" string="Redirect (Callback) URI"/>
+                    <field name="scope" widget="badge" 
+                        decoration-info="scope == 'read'" 
+                        decoration-warning="scope == 'write'" 
+                        decoration-danger="scope == 'admin'" 
+                        />
+                    
+                    <field name="is_active" widget="boolean_toggle"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Form View -->
+        <record id="akm_oauth_client_form" model="ir.ui.view">
+            <field name="name">akm.oauth.client.form</field>
+            <field name="model">akm.oauth.client</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="e.g: Alkhwarizmi Metrics"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="client_id" string="Client ID"/>
+                                <!-- client_secret intentionally not shown here -->
+                                <field name="redirect_uri"/>
+                                <field name="is_active" widget="boolean_toggle"/>
+                            </group>
+                            <group>
+                            <field name="scope" widget="badge" 
+                                    decoration-info="scope == 'read'" 
+                                    decoration-warning="scope == 'write'" 
+                                    decoration-danger="scope == 'admin'" 
+                                    />
+                            </group>
+                        </group>
+                        <notebook>
+                           <!-- Updated page to handle model & field permissions -->
+                            <page string="Permissions" name="permissions">
+                                <field name="permission_ids" widget="one2many_list">
+                                    <list>
+                                        <field name="model_id" string="Model"/>
+                                        <field name="field_ids" widget="many2many_tags" string="Allowed Fields"/>
+                                    </list>
+                                    <form>
+                                        <sheet>
+                                            <group>
+                                                <field name="model_id"/>
+                                                <field name="field_ids" widget="many2many_tags"/>
+                                            </group>
+                                        </sheet>
+                                    </form>
+                                </field>
+                            </page>
+
+                            <!-- Readonly Nested Page (Tab) for viewing authorization codes -->
+                            <page name="auth_codes" string="Authorization Codes">
+                                <field name="authcode_ids" readonly="1" widget="one2many_list">
+                                    <list create="false" edit="false" delete="false">
+                                        <field name="code"/>
+                                        <field name="user_name"/>
+                                        <field name="expires_at"/>
+                                        <field name="used"/>
+                                    </list>
+                                    <form>
+                                        <sheet>
+                                            <group>
+                                                <field name="code" readonly="1"/>
+                                                <field name="user_name" readonly="1"/>
+                                                <field name="expires_at" readonly="1"/>
+                                                <field name="used" readonly="1"/>
+                                            </group>
+                                        </sheet>
+                                    </form>
+                                </field>
+                            </page>
+
+                            <!-- Readonly Nested Page (Tab) for viewing tokens -->
+                            <page name="tokens" string="Tokens">
+                                <field name="token_ids" readonly="1" widget="one2many_list">
+                                    <list create="false" edit="false" delete="false">
+                                        <field name="user_name"/>
+                                        <field name="access_token"/>
+                                        <field name="refresh_token"/>
+                                        <field name="expires_at"/>
+
+                                        <field name="scope" widget="badge" 
+                                                decoration-info="scope == 'read'" 
+                                                decoration-warning="scope == 'write'" 
+                                                decoration-danger="scope == 'admin'" 
+                                                />
+                                        <field name="is_refresh_token_valid" widget="boolean_toggle"/>
+                                    </list>
+                                    <form>
+                                        <sheet>
+                                            <group>
+                                                <field name="user_name" readonly="1"/>
+                                                <field name="access_token" readonly="1"/>
+                                                <field name="refresh_token" readonly="1"/>
+                                                <field name="expires_at" readonly="1"/>
+
+                                                <field name="scope" widget="badge" 
+                                                        decoration-info="scope == 'read'" 
+                                                        decoration-warning="scope == 'write'" 
+                                                        decoration-danger="scope == 'admin'" 
+                                                        />
+
+                                                <field name="is_refresh_token_valid" widget="boolean_toggle"/>
+                                            </group>
+                                        </sheet>
+                                    </form>
+                                </field>
+                            </page>
+
+                            <!-- Readonly Nested Page (Tab) for viewing request Logs -->
+                            <page name="request_logs" string="Request Logs">
+                                <field name="request_log_ids" readonly="1" widget="one2many_list">
+                                    <list create="false" edit="false" delete="false">
+                                        <field name="name"/>
+                                        <field name="method"/>
+                                        <field name="status_code"/>
+                                        <field name="duration"/>
+                                        <field name="create_date"/>
+                                    </list>
+                                    <form>
+                                        <sheet>
+                                            <group>
+                                                <field name="name" readonly="1"/>
+                                                <field name="endpoint" readonly="1"/>
+                                                <field name="method" readonly="1"/>
+                                                <field name="request_params" readonly="1"/>
+
+                                                <field name="status_code" readonly="1"/>
+                                                <field name="ip_address" readonly="1"/>
+                                                <field name="user_agent" readonly="1"/>
+                                                <field name="duration" readonly="1"/>
+                                                <field name="create_date" readonly="1"/>
+                                            </group>
+                                        </sheet>
+                                    </form>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="akm_oauth_client_action" model="ir.actions.act_window">
+            <field name="name">AKM OAuth Clients</field>
+            <field name="res_model">akm.oauth.client</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <!-- Menu -->
+        <menuitem 
+            id="akm_oauth_main_menu" 
+            name="AKM Oauth2.0"
+            parent="base.menu_administration"
+            sequence="100"/>
+
+        <menuitem 
+            id="akm_oauth_client_menu" 
+            name="AKM Oauth2.0 Clients" 
+            parent="akm_oauth_main_menu"
+            action="akm_oauth_client_action"
+            sequence="101"/>
+    </data>
+</odoo>
