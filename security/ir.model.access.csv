@@ -1,5 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_oauth_token_user,oauth.token.user,model_oauth_token,base.group_user,1,0,0,0
-access_oauth_token_admin,oauth.token.admin,model_oauth_token,base.group_system,1,1,1,1
-access_oauth_config_user,oauth.config.user,model_oauth_config,base.group_user,1,0,0,0
-access_oauth_config_admin,oauth.config.admin,model_oauth_config,base.group_system,1,1,1,1 
